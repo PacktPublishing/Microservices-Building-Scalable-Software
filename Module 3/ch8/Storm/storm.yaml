@@ -1,0 +1,62 @@
+# Please change these for your cluster
+# to reflect your cluster settings
+# -----------------------------------------------------------
+mesos.master.url: "zk://localhost:2181/mesos"
+storm.zookeeper.servers:
+    - "localhost"
+# -----------------------------------------------------------
+
+
+# Worker resources
+topology.mesos.worker.cpu: 1.0
+# Worker heap with 25% overhead
+topology.mesos.worker.mem.mb: 512
+worker.childopts: "-Xmx384m"
+
+# Supervisor resources
+topology.mesos.executor.cpu: 0.1
+topology.mesos.executor.mem.mb: 500 # Supervisor memory, with 20% overhead
+supervisor.childopts: "-Xmx400m"
+
+# The default behavior is to launch the logviewer unless autostart is false.
+# If you enable the logviewer, you'll need to add memory overhead to the
+# executor for the logviewer.
+logviewer.port: 8000
+logviewer.childopts: "-Xmx128m"
+logviewer.cleanup.age.mins: 10080
+logviewer.appender.name: "A1"
+supervisor.autostart.logviewer: true
+
+# Use the public Mesosphere Storm build
+# Please note that it won't work with other distributions.
+# You may want to make this empty if you use `mesos.container.docker.image` instead.
+# mesos.executor.uri: "file:///usr/local/storm/storm-mesos-0.9.6.tgz"
+
+# Alternatively, use a Docker image instead of URI. If an image is specified,
+# Docker will be used instead of Mesos containers.
+mesos.container.docker.image: "mesosphere/storm"
+
+# Use Netty to avoid ZMQ dependencies
+storm.messaging.transport: "backtype.storm.messaging.netty.Context"
+
+storm.local.dir: "storm-local"
+
+# role must be one of the mesos-master's roles defined in the --roles flag
+#
+mesos.framework.role: "*"
+mesos.framework.checkpoint: true
+mesos.framework.name: "Storm"
+
+# For setting up the necessary mesos authentication see mesos authentication page
+# and set the mesos-master flags --credentials, --authenticate, --acls, and --roles.
+#
+#mesos.framework.principal: "storm"
+
+# The "secret" phrase cannot be followed by a NL
+#
+#mesos.framework.secret.file: "storm-local/secret"
+
+#mesos.allowed.hosts:
+#  - host1
+#mesos.disallowed.hosts:
+#  - host1

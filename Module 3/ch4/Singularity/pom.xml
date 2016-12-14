@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.hubspot</groupId>
+    <artifactId>basepom</artifactId>
+    <version>15.3</version>
+  </parent>
+
+  <artifactId>Singularity</artifactId>
+  <version>0.6.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:HubSpot/Singularity.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/HubSpot/Singularity.git</developerConnection>
+    <url>git@github.com:HubSpot/Singularity.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Whitney Sorenson</name>
+      <email>wsorenson@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Tom Petr</name>
+      <email>tpetr@hubspot.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <singularity.jar.name.format>${project.artifactId}-${project.version}</singularity.jar.name.format>
+    <basepom.jar.name.format>${singularity.jar.name.format}</basepom.jar.name.format>
+
+    <!-- build the docs for releases -->
+    <basepom.release.profiles>oss-release,build-swagger-documentation</basepom.release.profiles>
+
+    <dropwizard.guicier.version>0.7.1.2</dropwizard.guicier.version>
+    <baragon.version>0.2.0</baragon.version>
+    <horizon.version>0.0.24</horizon.version>
+    <mesos.docker.tag>0.23.0-1.0.ubuntu1404</mesos.docker.tag>
+    <mesos.version>0.23.0</mesos.version>
+    <singularitybase.image.revision>1</singularitybase.image.revision>
+  </properties>
+
+  <modules>
+    <module>SingularityService</module>
+    <module>SingularityBase</module>
+    <module>SingularityRunnerBase</module>
+    <module>SingularityS3Base</module>
+    <module>SingularityMesosClient</module>
+    <module>SingularityClient</module>
+    <module>SingularityExecutor</module>
+    <module>SingularityExecutorCleanup</module>
+    <module>SingularityLogWatcher</module>
+    <module>SingularityS3Uploader</module>
+    <module>SingularityS3Downloader</module>
+    <module>SingularityOOMKiller</module>
+    <module>SingularitySwagger</module>
+    <module>EmbedSingularityExample</module>
+    <module>SingularityServiceIntegrationTests</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityBase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityRunnerBase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityS3Base</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityMesosClient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityClient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityService</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityServiceIntegrationTests</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityExecutor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>SingularityExecutorCleanup</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot.jackson</groupId>
+        <artifactId>jackson-datatype-protobuf</artifactId>
+        <version>0.9.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot.dropwizard</groupId>
+        <artifactId>dropwizard-guicier</artifactId>
+        <version>${dropwizard.guicier.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot.jackson</groupId>
+        <artifactId>jackson-jaxrs-propertyfiltering</artifactId>
+        <version>0.7.0</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.187</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>3.1.1</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.13</version>
+      </dependency>
+        
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>BaragonCore</artifactId>
+        <version>${baragon.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-client</artifactId>
+        <version>3.1.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>javax.inject</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>aopalliance-repackaged</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>HorizonCore</artifactId>
+        <version>${horizon.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hubspot</groupId>
+        <artifactId>HorizonNing</artifactId>
+        <version>${horizon.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.directory.api</groupId>
+        <artifactId>api-all</artifactId>
+        <version>1.0.0-M28</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.antlr</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.palominolabs.metrics</groupId>
+        <artifactId>metrics-guice</artifactId>
+        <version>3.1.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.codahale.metrics</groupId>
+        <artifactId>metrics-annotation</artifactId>
+        <version>${dep.metrics.version}</version><!-- TOOD: add this to HubSpot's basepom -->
+      </dependency>
+
+      <dependency>
+        <groupId>com.codahale.metrics</groupId>
+        <artifactId>metrics-graphite</artifactId>
+        <version>${dep.metrics.version}</version><!-- TOOD: add this to HubSpot's basepom -->
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jolokia</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.13.2</version>
+          <configuration>
+            <images />  <!-- default to no images to allow building from parent, let submodules override -->
+          </configuration>
+          <executions>
+            <execution>
+              <id>build-docker-images</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>build</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.18.1</version>
+        </plugin>
+        <plugin>
+          <groupId>pl.project13.maven</groupId>
+          <artifactId>git-commit-id-plugin</artifactId>
+          <configuration>
+            <gitDescribe>
+              <match>Singularity*</match>  <!-- logfetch tags exist too... don't use those -->
+            </gitDescribe>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>0.0.23</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.kongchen</groupId>
+          <artifactId>swagger-maven-plugin</artifactId>
+          <version>${dep.swagger-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.wordnik</groupId>
+              <artifactId>swagger-jaxrs_2.10</artifactId>
+              <version>${dep.swagger.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.wordnik</groupId>
+              <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
+              <version>${dep.swagger.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.hubspot</groupId>
+              <artifactId>SingularitySwagger</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+        	<groupId>org.eclipse.m2e</groupId>
+        	<artifactId>lifecycle-mapping</artifactId>
+        	<version>1.0.0</version>
+        	<configuration>
+        		<lifecycleMappingMetadata>
+        			<pluginExecutions>
+        				<pluginExecution>
+        					<pluginExecutionFilter>
+        						<groupId>
+        							com.hubspot.maven.plugins
+        						</groupId>
+        						<artifactId>
+        							dependency-management-plugin
+        						</artifactId>
+        						<versionRange>[0.3,)</versionRange>
+        						<goals>
+        							<goal>analyze</goal>
+        						</goals>
+        					</pluginExecutionFilter>
+        					<action>
+        						<ignore />
+        					</action>
+        				</pluginExecution>
+        			</pluginExecutions>
+        		</lifecycleMappingMetadata>
+        	</configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
+
+<!-- Local Variables: -->
+<!-- mode: nxml -->
+<!-- nxml-child-indent: 2 -->
+<!-- End: -->

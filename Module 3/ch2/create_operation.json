@@ -1,0 +1,33 @@
+{
+
+  "id" : <offer_id>,
+
+  "framework_id" : <framework_id>,
+
+  "slave_id" : <slave_id>,
+
+  "hostname" : <hostname>,
+
+  "resources" : [
+
+    {
+
+      "name" : "disk",
+
+      "type" : "SCALAR",
+
+      "scalar" : { "value" : 6144 },
+
+      "role" : <framework_role>,
+
+      "reservation" : {
+
+        "principal" : <framework_principal>
+
+      }
+
+    }
+
+  ]
+
+}

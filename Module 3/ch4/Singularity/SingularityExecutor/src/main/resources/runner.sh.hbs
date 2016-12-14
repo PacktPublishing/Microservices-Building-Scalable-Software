@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# This script was automatically generated.
+# Task ID: {{{ taskId }}}
+#
+
+export MESOS_TASK_ID={{{bashEscaped taskId}}}  # I can't believe Mesos doesn't expose this.
+
+# load system-wide profile.d
+if [[ -d /etc/profile.d ]]; then
+  echo "Sourcing files from /etc/profile.d"
+  for i in /etc/profile.d/*.sh; do
+    source $i >/dev/null 2>&1
+    echo "    Sourced $i"
+  done
+else
+  echo "No /etc/profile.d to source"
+fi
+
+# load env vars
+if [[ -f deploy.env ]]; then
+  echo "Sourcing deploy-specific environment variables"
+  source deploy.env
+else
+  echo "No deploy-specific environment variables"
+fi
+
+# TODO: consider removing this when all artifacts have tmp folder created at build time?
+if [[ ! -d ./tmp ]]; then
+  echo "Creating tmp directory in sandbox"
+  mkdir ./tmp
+fi
+
+echo "Ensuring ./tmp is owned by {{{ user }}} with 0750"
+sudo chown -R {{{ user }}} ./tmp
+sudo chmod -R 0750 ./tmp
+
+# Create log directory for logrotate runs
+if [[ ! -d {{{ logDir }}} ]]; then
+    echo "Creating log directory ({{{ logDir }}})"
+    mkdir -p {{{ logDir }}}
+fi
+
+echo "Ensuring {{{ logDir }}} is owned by {{{ user }}} with 0750"
+sudo chown -R {{{ user }}} {{{ logDir }}}
+sudo chmod -R 0750 {{{ logDir }}}
+
+echo "Ensuring {{{ taskAppDirectory }}} exists and is owned by {{{ user }}}"
+if [[ ! -d {{{ taskAppDirectory }}} ]]; then
+    echo "Creating {{{ taskAppDirectory }}} directory"
+    mkdir -p {{{ taskAppDirectory }}}
+fi
+sudo chown -R {{{ user }}} {{{ taskAppDirectory }}}
+
+cd {{{ taskAppDirectory }}}/
+
+# load artifact's profile.d
+if [[ -d .profile.d ]]; then
+    for FILE in $(ls .profile.d/*); do
+        source "$FILE"
+        echo "Sourced $FILE"
+    done
+else
+  echo "No deploy-specific profile.d"
+fi
+
+# execute command
+{{#if shouldChangeUser}}
+echo "Executing: {{{ switchUserCommand }}} {{#if maxOpenFiles}}/bin/bash -c 'ulimit -Sn {{{maxOpenFiles}}} && {{/if}}{{{ cmd }}}{{#if maxOpenFiles}}'{{/if}} >> ../{{{ logFile }}} 2>&1"
+exec {{{ switchUserCommand }}} {{#if maxOpenFiles}}/bin/bash -c 'ulimit -Sn {{{maxOpenFiles}}} && {{/if}}{{{ cmd }}}{{#if maxOpenFiles}}'{{/if}} >> ../{{{ logFile }}} 2>&1
+{{else}}
+echo "Executing: {{{ cmd }}} >> ../{{{ logFile }}} 2>&1"
+{{#if maxOpenFiles}}ulimit -Sn {{{maxOpenFiles}}}{{/if}}
+exec {{{ cmd }}} >> ../{{{ logFile }}} 2>&1
+{{/if}}

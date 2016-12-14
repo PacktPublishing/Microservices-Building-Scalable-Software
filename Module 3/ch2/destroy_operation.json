@@ -1,0 +1,51 @@
+{
+
+  "id" : <offer_id>,
+
+  "framework_id" : <framework_id>,
+
+  "slave_id" : <slave_id>,
+
+  "hostname" : <hostname>,
+
+  "resources" : [
+
+    {
+
+      "name" : "disk",
+
+      "type" : "SCALAR",
+
+      "scalar" : { "value" : 2048 },
+
+      "role" : <framework_role>,
+
+      "reservation" : {
+
+        "principal" : <framework_principal>
+
+      },
+
+      "disk": {
+
+        "persistence": {
+
+          "id" : <persistent_volume_id>
+
+        },
+
+        "volume" : {
+
+          "container_path" : <container_path>,
+
+          "mode" : <mode>
+
+        }
+
+      }
+
+    }
+
+  ]
+
+}

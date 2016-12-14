@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# Downloads a release candidate and verifies that it passes binary
+# verification (signature and checksums) and test suites.
+#
+set -ex
+set -o nounset
+
+HERE=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+
+aurora_svn_dev_dist_url='https://dist.apache.org/repos/dist/dev/aurora'
+
+download_dist_file() {
+  curl -f -O ${aurora_svn_dev_dist_url}/$1
+}
+
+download_rc_file() {
+  download_dist_file ${verify_version}/$1
+}
+
+import_gpg_keys() {
+  download_dist_file KEYS
+  gpg --import KEYS
+}
+
+fetch_archive() {
+  local dist_name=$1
+  download_rc_file ${dist_name}.tar.gz
+  download_rc_file ${dist_name}.tar.gz.asc
+  download_rc_file ${dist_name}.tar.gz.md5
+  download_rc_file ${dist_name}.tar.gz.sha
+  gpg --verify ${dist_name}.tar.gz.asc ${dist_name}.tar.gz
+  gpg --print-md MD5 ${dist_name}.tar.gz | diff - ${dist_name}.tar.gz.md5
+  shasum ${dist_name}.tar.gz | diff - ${dist_name}.tar.gz.sha
+}
+
+install_gradle_wrapper() {
+  GRADLE_VERSION=$(grep GRADLE_VERSION $HERE/../../buildSrc/gradle.properties | cut -d' ' -f3)
+  curl -f -O https://downloads.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
+  unzip gradle-${GRADLE_VERSION}-bin.zip
+  gradle_path=$PWD/gradle-$GRADLE_VERSION/bin/gradle
+  pushd $1
+    $gradle_path wrapper
+  popd
+}
+
+run_tests() {
+  ./build-support/jenkins/build.sh
+  ./src/test/sh/org/apache/aurora/e2e/test_end_to_end.sh
+}
+
+# TODO(wfarner): Share this with make-mesos-native-egg.
+setup_tempdir() {
+  cleanup() {
+    if [[ -f Vagrantfile ]]; then
+      vagrant destroy -f
+    fi
+    rm -fr "$TMPDIR"
+  }
+  trap cleanup EXIT
+  TMPDIR=$(mktemp -d -t "$1.XXXXX")
+}
+
+case $# in
+  1) verify_version="$1"
+     ;;
+
+  *) echo "Usage: $0 RC_VERSION"
+     exit 1
+     ;;
+esac
+
+setup_tempdir "aurora-$verify_version"
+echo "Working in sandbox $TMPDIR"
+cd $TMPDIR
+
+import_gpg_keys
+
+dist_name="apache-aurora-${verify_version}"
+fetch_archive $dist_name
+tar xvzf ${dist_name}.tar.gz
+install_gradle_wrapper ${dist_name}
+cd ${dist_name}
+run_tests
+
+echo 'Release candidate looks good!'
+exit 0

@@ -1,0 +1,25 @@
+dateext
+compress
+daily
+copytruncate
+nomail
+nosharedscripts
+rotate {{{ rotateCount }}}
+maxage {{{ maxageDays }}}
+notifempty
+
+{{#if shouldLogRotateLogFile }}
+{{{ logfile }}} {
+  dateformat {{{ rotateDateformat }}}{{#if logfileExtension}}.{{{ logfileExtension}}}{{/if}}
+  olddir {{{ rotateDirectory }}}
+}
+{{/if}}
+
+{{#if extrasFiles}}
+{{#each extrasFiles}}{{{filename}}} {
+  dateformat {{{ dateformat }}}{{#if extension}}.{{{ extension}}}{{/if}}
+  missingok
+}
+
+{{/each}}
+{{/if}}

@@ -1,0 +1,20 @@
+# IDEA Ignores
+*.ipr
+*.iws
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/libraries/
+/.project
+.classpath
+.settings/
+*.class
+*.war
+*.ear
+*/.cache
+deploy
+target/
+.scala_dependencies
+.project
+
+project/project
+project/target

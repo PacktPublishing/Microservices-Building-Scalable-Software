@@ -1,0 +1,15 @@
+* text eol=lf
+
+/gradlew export-ignore
+/gradle export-ignore
+
+*.pyc export-ignore
+*.zip export-ignore
+*.gzip export-ignore
+*.tar export-ignore
+*.tar.gz export-ignore
+
+# All files that are binary and whose line endings should not be modified.
+*.png binary
+*.jpg binary
+*.odg binary

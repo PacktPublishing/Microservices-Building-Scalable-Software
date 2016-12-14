@@ -1,0 +1,20 @@
+{
+  "tiers":
+  {
+    "preferred":
+    {
+      "preemptible": false,
+      "revocable": false
+    },
+    "preemptible":
+    {
+      "preemptible": true,
+      "revocable": false
+    },
+    "revocable":
+    {
+      "preemptible": true,
+      "revocable": true
+    }
+  }
+}

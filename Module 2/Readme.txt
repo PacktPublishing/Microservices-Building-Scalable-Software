@@ -1,0 +1,1 @@
+There are no code files for chapters 1, 3, and 10. All hardware requirements are mentioned in the file named "Hardware and Software requirements". Any other requirements are mentioned in the chapters wherever necessary.
