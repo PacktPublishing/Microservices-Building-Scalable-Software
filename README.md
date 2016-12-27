@@ -9,9 +9,9 @@ Microservices: Building Scalable Software by Packt Publishing
 * Deploy and test microservices
 * Use Spring Boot to develop microservices
 * Find out how to avoid common pitfalls when developing microservices
-* Familiarize yourself with end-to-end microservices written in Spring Framework and Spring Boot
-* Understand the Mesos architecture
-* Deploy a multi-node Mesos cluster using your favorite DevOps
+* Be introduced to end-to-end microservices written in Spring Framework and Spring Boot
+* Re-architecture an existing monolithic system into a microservices oriented software
+* Testing of the microservices in insolation in order to create a solid system
 
 ###Related Products
 
